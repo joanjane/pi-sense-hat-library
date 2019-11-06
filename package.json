@@ -1,0 +1,20 @@
+{
+  "name": "pi-sense-hat-library",
+  "version": "1.0.0",
+  "description": "A node library that wraps node sense hat sensors into a simple API with the same methods as pi-sense-hat-remote-simulator package for easy swapping production and simulation modes.",
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joanjane/pi-sense-hat-library.git"
+  },
+  "author": "Joan Jané",
+  "license": "ISC",
+  "homepage": "https://github.com/joanjane/pi-sense-hat-library",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "sense-hat-led": "1.0.1",
+    "sense-joystick": "0.0.3"
+  }
+}
