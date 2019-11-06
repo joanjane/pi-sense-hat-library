@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "A node library that wraps node sense hat sensors into a simple API with the same methods as pi-sense-hat-remote-simulator package for easy swapping production and simulation modes.",
   "scripts": {
+    "prebuild:lib": "del-cli \"cjs/**/*\" \"!cjs/package.json\"",
+    "build:lib": "babel src --out-dir cjs"
   },
   "repository": {
     "type": "git",
@@ -10,9 +12,21 @@
   },
   "author": "Joan Jané",
   "license": "ISC",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": {
+    "./": "./src/index.js"
+  },
   "homepage": "https://github.com/joanjane/pi-sense-hat-library",
   "dependencies": {
     "sense-hat-led": "1.0.1",
     "sense-joystick": "0.0.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.7.0",
+    "@babel/core": "^7.7.0",
+    "@babel/node": "^7.7.0",
+    "@babel/preset-env": "^7.7.1",
+    "del-cli": "^3.0.0"
   }
 }
