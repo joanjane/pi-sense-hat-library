@@ -1,6 +1,12 @@
 import { getJoystick } from 'sense-joystick';
 
 export class Joystick {
+  constructor() {
+    this.onPressListeners = [];
+    this.onHoldListeners = [];
+    this.onReleaseListeners = [];
+  }
+  
   connect(onOpen) {
     getJoystick().then(joystick => {
       this.joystick = joystick;
