@@ -12,8 +12,6 @@
   "license": "ISC",
   "homepage": "https://github.com/joanjane/pi-sense-hat-library",
   "dependencies": {
-  },
-  "devDependencies": {
     "sense-hat-led": "1.0.1",
     "sense-joystick": "0.0.3"
   }
