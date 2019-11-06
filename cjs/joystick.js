@@ -18,6 +18,10 @@ var Joystick =
 function () {
   function Joystick() {
     _classCallCheck(this, Joystick);
+
+    this.onPressListeners = [];
+    this.onHoldListeners = [];
+    this.onReleaseListeners = [];
   }
 
   _createClass(Joystick, [{
