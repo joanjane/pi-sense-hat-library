@@ -25,7 +25,7 @@ function () {
     value: function connect(onOpen) {
       var _this = this;
 
-      _senseJoystick.Joystick.getJoystick().then(function (joystick) {
+      (0, _senseJoystick.getJoystick)().then(function (joystick) {
         _this.joystick = joystick;
         onOpen && onOpen();
 

@@ -1,8 +1,8 @@
-import { Joystick as senseJoystick } from 'sense-joystick';
+import { getJoystick } from 'sense-joystick';
 
 export class Joystick {
   connect(onOpen) {
-    senseJoystick.getJoystick().then(joystick => {
+    getJoystick().then(joystick => {
       this.joystick = joystick;
       onOpen && onOpen();
 
