@@ -2,12 +2,14 @@ const { Display } = require('../cjs/display');
 
 const display = new Display(nodeWebSocketFactory, env.SERVER_URI, env.TARGET);
 
+
 const sequence = [
-  () => { display.setPixel(2, 6, '#aa55dd') },
+  () => { client.setPixel(2, 6, [123, 9, 200]) },
   () => { display.setPixel('*', '*', '#2255dd') },
   () => { display.clear() },
   () => { display.setPixel('*', 4, '#bb44ee') },
   () => { display.setPixel(3, '*', '#ff00ff') },
+  () => { display.setPixels(testPixels) },
   () => { display.showMessage(`This is a test message ${Date.now()}`, 0, '#bbaa00', () => { console.log('Finished'), process.exit(0) }) }
 ];
 
@@ -26,3 +28,16 @@ function runSequence(seq) {
     runSequence(rest);
   }, 5000);
 }
+
+const O = '#123fff';
+const X = [123, 200, 30];
+const testPixels = [
+  O, O, O, O, O, O, O, O,
+  O, O, X, O, X, X, O, O,
+  O, O, O, O, X, O, O, O,
+  O, O, O, O, O, O, O, O,
+  O, X, O, O, O, O, X, O,
+  O, X, O, O, O, O, X, O,
+  O, O, X, X, X, X, O, O,
+  O, O, O, O, O, O, O, O
+];
