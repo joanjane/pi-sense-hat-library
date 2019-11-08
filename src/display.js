@@ -28,12 +28,12 @@ export class Display {
     this.senseHatLeds.setPixel(x, y, renderColor);
   }
 
-  setPixelS(pixels) {
+  setPixels(pixels) {
     if (pixels.length != 64) {
       throw new Error('pixels must contain 64 elements');
     }
     const renderPixels = pixels.map(color => typeof color === 'string' ? hexToRgb(color) : color);
-    this.senseHatLeds.setPixelS(renderPixels);
+    this.senseHatLeds.setPixels(renderPixels);
   }
 }
 
