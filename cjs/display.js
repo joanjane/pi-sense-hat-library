@@ -52,8 +52,8 @@ function () {
       this.senseHatLeds.setPixel(x, y, renderColor);
     }
   }, {
-    key: "setPixelS",
-    value: function setPixelS(pixels) {
+    key: "setPixels",
+    value: function setPixels(pixels) {
       if (pixels.length != 64) {
         throw new Error('pixels must contain 64 elements');
       }
@@ -61,7 +61,7 @@ function () {
       var renderPixels = pixels.map(function (color) {
         return typeof color === 'string' ? hexToRgb(color) : color;
       });
-      this.senseHatLeds.setPixelS(renderPixels);
+      this.senseHatLeds.setPixels(renderPixels);
     }
   }]);
 
