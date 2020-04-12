@@ -27,3 +27,15 @@ Object.keys(_display).forEach(function (key) {
     }
   });
 });
+
+var _environmentSensors = require("./environment-sensors");
+
+Object.keys(_environmentSensors).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _environmentSensors[key];
+    }
+  });
+});

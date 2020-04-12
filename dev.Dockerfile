@@ -7,4 +7,5 @@ WORKDIR /src
 RUN apk --no-cache --virtual build-dependencies add \
     python \
     make \
-    g++
+    g++ \
+    linux-headers
