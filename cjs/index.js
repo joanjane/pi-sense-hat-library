@@ -28,14 +28,26 @@ Object.keys(_display).forEach(function (key) {
   });
 });
 
-var _environmentSensors = require("./environment-sensors");
+var _environment = require("./environment");
 
-Object.keys(_environmentSensors).forEach(function (key) {
+Object.keys(_environment).forEach(function (key) {
   if (key === "default" || key === "__esModule") return;
   Object.defineProperty(exports, key, {
     enumerable: true,
     get: function get() {
-      return _environmentSensors[key];
+      return _environment[key];
+    }
+  });
+});
+
+var _motion = require("./motion");
+
+Object.keys(_motion).forEach(function (key) {
+  if (key === "default" || key === "__esModule") return;
+  Object.defineProperty(exports, key, {
+    enumerable: true,
+    get: function get() {
+      return _motion[key];
     }
   });
 });
