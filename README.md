@@ -8,7 +8,7 @@ A node library that wraps node sense hat sensors into an unified API. Build node
 - sense-joystick: 0.0.3
 - nodeimu: 2.1.12
 
-**(this dependecies also require to have installed this packaged and only working under linux: `python make g++ linux-headers`)
+*(this dependecies also require to have installed this packaged and only working under linux: `python make g++ linux-headers`)*
 
 ## Usage
 Check out [samples section](#samples)
