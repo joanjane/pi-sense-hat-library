@@ -11,7 +11,7 @@ A node library that wraps node sense hat sensors into an unified API. Build node
 **(this dependecies also require to have installed this packaged and only working under linux: `python make g++ linux-headers`)
 
 ## Usage
-Check out [sample application](https://github.com/joanjane/pi-sense-hat-library-sample) which demoes all features.
+Check out [samples section](#samples)
 
 The client library is built with ESM modules and is also distributed as "classic" CommonJS modules for compatibility.
 There are 4 modules available:
@@ -42,3 +42,10 @@ There are 4 modules available:
 For development, it is possible to use a docker image with all dependencies installed where you can develop on mounting the source files from host machine to container. Running `run-dev-shell.ps1` script will start a container with a bash shell. Then you can install packages with `npm i`.
 
 This library is developed using ESM modules and is transpiled to CommonJS modules with `npm run build:lib` command.
+
+    
+## Samples
+* [pi-sense-hat-library-sample](https://github.com/joanjane/pi-sense-hat-library-sample) Sample application that uses all features from this library
+* [pi-sense-hat-weather-forecast](https://github.com/joanjane/pi-sense-hat-weather-forecast)
+See a simple weather forecast application.
+
