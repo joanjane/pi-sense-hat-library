@@ -4,9 +4,9 @@ pi-sense-hat-library
 A node library that wraps node sense hat sensors into an unified API. Build node SenseHat apps easily taking advantage of the alter ego library for simulating sensehat for easier development [pi-sense-hat-remote-simulator](https://github.com/joanjane/pi-sense-hat-remote-simulator).
 
 ## Dependencies:
-- sense-hat-led: 1.0.1
-- sense-joystick: 0.0.3
-- nodeimu: 2.1.12
+- [sense-hat-led](https://github.com/aonghusonia/sense-hat-led): 1.0.1
+- [sense-joystick](https://github.com/balena-io-playground/sense-joystick): 0.0.3
+- [nodeimu](https://github.com/rupnikj/nodeimu#readme): 2.1.12
 
 *(this dependecies also require to have installed this packages and only working under linux: `python make g++ linux-headers`)*
 
@@ -22,7 +22,7 @@ There are 4 modules available:
 * MotionSensors (acceleromenter, gyroscope, orientation, compass)
 
 ```js
-    // setup of Display module with CommonJS
+    // setup using CommonJS modules
     const { Display, Joystick, EnvironmentSensors, MotionSensors } = require('pi-sense-hat-library/cjs');
     const display = new Display();
     const joystick = new Joystick();
@@ -30,7 +30,7 @@ There are 4 modules available:
     const motionSensors = new MotionSensors();
 
     
-    // setup of Display module with ESM
+    // setup using ESM modules
     import { Display, Joystick, EnvironmentSensors, MotionSensors } from 'pi-sense-hat-library';
     const display = new Display();
     const joystick = new Joystick();
