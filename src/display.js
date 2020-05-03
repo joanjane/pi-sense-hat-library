@@ -19,11 +19,11 @@ export class Display {
   }
 
   showMessage(message, speed, color, done) {
-    this.senseHatLeds.showMessage(message, speed, color, done);
+    this.senseHatLeds.showMessage(message, speed, this.formatColor(color), done);
   }
 
   setPixel(x, y, color) {
-    const renderColor = typeof color === 'string' ? hexToRgb(color) : color;
+    const renderColor = this.formatColor(color);
 
     this.senseHatLeds.setPixel(x, y, renderColor);
   }
@@ -32,8 +32,12 @@ export class Display {
     if (pixels.length != 64) {
       throw new Error('pixels must contain 64 elements');
     }
-    const renderPixels = pixels.map(color => typeof color === 'string' ? hexToRgb(color) : color);
+    const renderPixels = pixels.map(color => this.formatColor(color));
     this.senseHatLeds.setPixels(renderPixels);
+  }
+
+  formatColor(color) {
+    return typeof color === 'string' ? hexToRgb(color) : color;
   }
 }
 
