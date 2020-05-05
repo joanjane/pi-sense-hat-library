@@ -1,8 +1,9 @@
 import senseHatLed from 'sense-hat-led';
 
 export class Display {
-  constructor() {
+  constructor(enableLogging) {
     this.senseHatLeds = null;
+    this.enableLogging = enableLogging || false;
   }
 
   connect(onOpen) {
@@ -15,16 +16,25 @@ export class Display {
   }
 
   clear() {
+    if (this.enableLogging) {
+      console.log(`Cleared display`);
+    }
     this.senseHatLeds.sync.clear();
   }
 
   showMessage(message, speed, color, done) {
-    this.senseHatLeds.sync.showMessage(message, speed, this.formatColor(color), done);
+    const renderColor = this.formatColor(color);
+    if (this.enableLogging) {
+      console.log(`Displaying message '${message}' in color ${renderColor}`);
+    }
+    this.senseHatLeds.sync.showMessage(message, speed, renderColor, done);
   }
 
   setPixel(x, y, color) {
     const renderColor = this.formatColor(color);
-
+    if (this.enableLogging) {
+      console.log(`Displaying pixel '${x}/${y}' in color ${renderColor}`);
+    }
     this.senseHatLeds.sync.setPixel(x, y, renderColor);
   }
 
@@ -33,6 +43,9 @@ export class Display {
       throw new Error('pixels must contain 64 elements');
     }
     const renderPixels = pixels.map(color => this.formatColor(color));
+    if (this.enableLogging) {
+      console.log(`Displaying pixels`, renderPixels);
+    }
     this.senseHatLeds.sync.setPixels(renderPixels);
   }
 
