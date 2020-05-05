@@ -10,6 +10,10 @@ export class EnvironmentSensors {
     onConnect && onConnect();
   }
 
+  close() {
+    this.imu = null;
+  }
+
   getSensorsStatus() {
     const environmentSensors = new Promise((resolve, reject) => {
       this.imu.getValue((error, data) => {

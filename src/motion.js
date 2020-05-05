@@ -10,6 +10,10 @@ export class MotionSensors {
     onConnect && onConnect();
   }
 
+  close() {
+    this.imu = null;
+  }
+
   getMotionStatus() {
     const environmentSensors = new Promise((resolve, reject) => {
       this.imu.getValue((error, data) => {
