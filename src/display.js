@@ -4,6 +4,7 @@ export class Display {
   constructor(enableLogging) {
     this.senseHatLeds = null;
     this.enableLogging = enableLogging || false;
+    this.displaySize = { x: 8, y: 8 };
   }
 
   connect(onOpen) {
@@ -36,6 +37,32 @@ export class Display {
       console.log(`Displaying pixel '${x}/${y}' in color ${renderColor}`);
     }
     this.senseHatLeds.sync.setPixel(x, y, renderColor);
+  }
+
+  setPixel(x, y, color) {
+    const renderColor = this.formatColor(color);
+    if (this.enableLogging) {
+      console.log(`Displaying pixel '${x}/${y}' in color ${renderColor}`);
+    }
+    
+    if (typeof x === 'number' && typeof y === 'number') {
+      this.senseHatLeds.sync.setPixel(x, y, renderColor);
+      return;
+    }
+
+    const yMin = y === '*' ? 0 : y;
+    const yMax = y === '*' ? this.displaySize.y - 1 : y;
+    const xMin = x === '*' ? 0 : x;
+    const xMax = x === '*' ? this.displaySize.x - 1 : x;
+    
+    const renderPixels = this.senseHatLeds.sync.getPixels();
+    for (let yIndex = yMin; yIndex <= yMax; yIndex++) {
+      for (let xIndex = xMin; xIndex <= xMax; xIndex++) {
+        renderPixels[yIndex * this.displaySize.x + xIndex] = renderColor;
+      }
+    }
+
+    this.setPixels(renderPixels);
   }
 
   setPixels(pixels) {
