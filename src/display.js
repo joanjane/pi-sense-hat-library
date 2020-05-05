@@ -50,7 +50,7 @@ export class Display {
   }
 
   formatColor(color) {
-    if (!Array.isArray(color) || typeof color !== 'string') {
+    if (!Array.isArray(color) && typeof color !== 'string') {
       throw new Error(`Color is not valid ${color}`);
     }
     return typeof color === 'string' ? hexToRgb(color) : color;
@@ -59,7 +59,7 @@ export class Display {
 
 function hexToRgb(hex) {
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  if (!result || result.length !== 3) {
+  if (!result || result.length !== 4) {
     throw new Error(`'${hex}' is not a valid color`);
   }
   return [
