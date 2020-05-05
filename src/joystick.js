@@ -30,12 +30,6 @@ export class Joystick {
     this.onReleaseListeners.forEach(listener => listener(direction));
   };
 
-  handlePress = () => {
-    return (direction) => {
-      this.onPressListeners.forEach(listener => listener(direction));
-    };
-  };
-
   close() {
     if (this.joystick) {
       this.joystick.off('press', this.handlePress);
@@ -45,7 +39,6 @@ export class Joystick {
       this.onHoldListeners = [];
       this.onReleaseListeners = [];
     }
-
   }
 
   on(event, callback) {
