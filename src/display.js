@@ -37,6 +37,9 @@ export class Display {
   }
 
   formatColor(color) {
+    if (!Array.isArray(color) || typeof color !== 'string') {
+      throw new Error(`Color is not valid ${color}`);
+    }
     return typeof color === 'string' ? hexToRgb(color) : color;
   }
 }
