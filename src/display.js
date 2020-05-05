@@ -27,7 +27,7 @@ export class Display {
     if (this.enableLogging) {
       console.log(`Displaying message '${message}' in color ${renderColor}`);
     }
-    this.senseHatLeds.sync.showMessage(message, speed, renderColor, done);
+    this.senseHatLeds.showMessage(message, speed, renderColor, [0, 0, 0], done);
   }
 
   setPixel(x, y, color) {
