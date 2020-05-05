@@ -18,10 +18,11 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var Display =
 /*#__PURE__*/
 function () {
-  function Display() {
+  function Display(enableLogging) {
     _classCallCheck(this, Display);
 
     this.senseHatLeds = null;
+    this.enableLogging = enableLogging || false;
   }
 
   _createClass(Display, [{
@@ -38,30 +39,61 @@ function () {
   }, {
     key: "clear",
     value: function clear() {
-      this.senseHatLeds.clear();
+      if (this.enableLogging) {
+        console.log("Cleared display");
+      }
+
+      this.senseHatLeds.sync.clear();
     }
   }, {
     key: "showMessage",
     value: function showMessage(message, speed, color, done) {
-      this.senseHatLeds.showMessage(message, speed, color, done);
+      var renderColor = this.formatColor(color);
+
+      if (this.enableLogging) {
+        console.log("Displaying message '".concat(message, "' in color ").concat(renderColor));
+      }
+
+      this.senseHatLeds.showMessage(message, speed, renderColor, [0, 0, 0], done);
     }
   }, {
     key: "setPixel",
     value: function setPixel(x, y, color) {
-      var renderColor = typeof color === 'string' ? hexToRgb(color) : color;
-      this.senseHatLeds.setPixel(x, y, renderColor);
+      var renderColor = this.formatColor(color);
+
+      if (this.enableLogging) {
+        console.log("Displaying pixel '".concat(x, "/").concat(y, "' in color ").concat(renderColor));
+      }
+
+      this.senseHatLeds.sync.setPixel(x, y, renderColor);
     }
   }, {
     key: "setPixels",
     value: function setPixels(pixels) {
+      var _this = this;
+
       if (pixels.length != 64) {
         throw new Error('pixels must contain 64 elements');
       }
 
       var renderPixels = pixels.map(function (color) {
-        return typeof color === 'string' ? hexToRgb(color) : color;
+        return _this.formatColor(color);
       });
-      this.senseHatLeds.setPixels(renderPixels);
+
+      if (this.enableLogging) {
+        console.log("Displaying pixels", renderPixels);
+      }
+
+      this.senseHatLeds.sync.setPixels(renderPixels);
+    }
+  }, {
+    key: "formatColor",
+    value: function formatColor(color) {
+      if (!Array.isArray(color) || typeof color !== 'string') {
+        throw new Error("Color is not valid ".concat(color));
+      }
+
+      return typeof color === 'string' ? hexToRgb(color) : color;
     }
   }]);
 
@@ -72,5 +104,10 @@ exports.Display = Display;
 
 function hexToRgb(hex) {
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)] : null;
+
+  if (!result || result.length !== 3) {
+    throw new Error("'".concat(hex, "' is not a valid color"));
+  }
+
+  return [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)];
 }
