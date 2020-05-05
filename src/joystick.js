@@ -5,6 +5,15 @@ export class Joystick {
     this.onPressListeners = [];
     this.onHoldListeners = [];
     this.onReleaseListeners = [];
+
+    this.handlePress = (direction) =>
+      this.onPressListeners.forEach(listener => listener(direction));
+
+    this.handleHold = (direction) =>
+      this.onHoldListeners.forEach(listener => listener(direction));
+
+    this.handleRelease = (direction) =>
+      this.onReleaseListeners.forEach(listener => listener(direction));
   }
 
   connect(onOpen) {
@@ -17,18 +26,6 @@ export class Joystick {
       this.joystick.on('release', this.handleRelease());
     })
   }
-  
-  handlePress = (direction) => {
-    this.onPressListeners.forEach(listener => listener(direction));
-  };
-  
-  handleHold = (direction) => {
-    this.onHoldListeners.forEach(listener => listener(direction));
-  };
-
-  handleRelease = (direction) => {
-    this.onReleaseListeners.forEach(listener => listener(direction));
-  };
 
   close() {
     if (this.joystick) {
