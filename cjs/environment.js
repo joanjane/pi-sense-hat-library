@@ -29,6 +29,11 @@ function () {
       onConnect && onConnect();
     }
   }, {
+    key: "close",
+    value: function close() {
+      this.imu = null;
+    }
+  }, {
     key: "getSensorsStatus",
     value: function getSensorsStatus() {
       var _this = this;
