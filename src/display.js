@@ -15,17 +15,17 @@ export class Display {
   }
 
   clear() {
-    this.senseHatLeds.clear();
+    this.senseHatLeds.sync.clear();
   }
 
   showMessage(message, speed, color, done) {
-    this.senseHatLeds.showMessage(message, speed, this.formatColor(color), done);
+    this.senseHatLeds.sync.showMessage(message, speed, this.formatColor(color), done);
   }
 
   setPixel(x, y, color) {
     const renderColor = this.formatColor(color);
 
-    this.senseHatLeds.setPixel(x, y, renderColor);
+    this.senseHatLeds.sync.setPixel(x, y, renderColor);
   }
 
   setPixels(pixels) {
@@ -33,7 +33,7 @@ export class Display {
       throw new Error('pixels must contain 64 elements');
     }
     const renderPixels = pixels.map(color => this.formatColor(color));
-    this.senseHatLeds.setPixels(renderPixels);
+    this.senseHatLeds.sync.setPixels(renderPixels);
   }
 
   formatColor(color) {
@@ -46,9 +46,12 @@ export class Display {
 
 function hexToRgb(hex) {
   var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? [
+  if (!result || result.length !== 3) {
+    throw new Error(`'${hex}' is not a valid color`);
+  }
+  return [
     parseInt(result[1], 16),
     parseInt(result[2], 16),
     parseInt(result[3], 16)
-  ] : null;
+  ];
 }
