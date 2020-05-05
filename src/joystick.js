@@ -29,12 +29,10 @@ export class Joystick {
 
   close() {
     if (this.joystick) {
-      this.joystick.off('press', this.handlePress);
-      this.joystick.off('hold', this.handleHold);
-      this.joystick.off('release', this.handleRelease);
       this.onPressListeners = [];
       this.onHoldListeners = [];
       this.onReleaseListeners = [];
+      this.joystick = null;
     }
   }
 
