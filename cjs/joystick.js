@@ -17,47 +17,39 @@ var Joystick =
 /*#__PURE__*/
 function () {
   function Joystick() {
-    var _this = this;
-
     _classCallCheck(this, Joystick);
 
     this.onPressListeners = [];
     this.onHoldListeners = [];
     this.onReleaseListeners = [];
-
-    this.handlePress = function (direction) {
-      return _this.onPressListeners.forEach(function (listener) {
-        return listener(direction);
-      });
-    };
-
-    this.handleHold = function (direction) {
-      return _this.onHoldListeners.forEach(function (listener) {
-        return listener(direction);
-      });
-    };
-
-    this.handleRelease = function (direction) {
-      return _this.onReleaseListeners.forEach(function (listener) {
-        return listener(direction);
-      });
-    };
   }
 
   _createClass(Joystick, [{
     key: "connect",
     value: function connect(onOpen) {
-      var _this2 = this;
+      var _this = this;
 
       (0, _senseJoystick.getJoystick)().then(function (joystick) {
-        _this2.joystick = joystick;
+        _this.joystick = joystick;
         onOpen && onOpen();
 
-        _this2.joystick.on('press', _this2.handlePress());
+        _this.joystick.on('press', function (direction) {
+          return _this.onPressListeners.forEach(function (listener) {
+            return listener(direction);
+          });
+        });
 
-        _this2.joystick.on('hold', _this2.handleHold());
+        _this.joystick.on('hold', function (direction) {
+          return _this.onHoldListeners.forEach(function (listener) {
+            return listener(direction);
+          });
+        });
 
-        _this2.joystick.on('release', _this2.handleRelease());
+        _this.joystick.on('release', function (direction) {
+          return _this.onReleaseListeners.forEach(function (listener) {
+            return listener(direction);
+          });
+        });
       });
     }
   }, {
