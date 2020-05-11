@@ -4,7 +4,8 @@
   "description": "A node library that wraps node sense hat sensors into a simple API with the same methods as pi-sense-hat-remote-simulator package for easy swapping production and simulation modes.",
   "scripts": {
     "prebuild:lib": "del-cli \"cjs/**/*\" \"!cjs/package.json\"",
-    "build:lib": "babel src --out-dir cjs"
+    "build:lib": "babel src --out-dir cjs",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,7 @@
     "@babel/core": "^7.7.0",
     "@babel/node": "^7.7.0",
     "@babel/preset-env": "^7.7.1",
-    "del-cli": "^3.0.0"
+    "del-cli": "^3.0.0",
+    "jest": "^26.0.1"
   }
 }
