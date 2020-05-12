@@ -10,7 +10,8 @@ const sequence = [
   () => { display.setPixel('*', 4, '#bb44ee') },
   () => { display.setPixel(3, '*', '#ff00ff') },
   () => { display.setPixels(testPixels) },
-  () => { display.showMessage(`This is a test message ${Date.now()}`, 0, '#bbaa00', () => { console.log('Finished'), process.exit(0) }) }
+  () => { display.showMessage(`This is a test message ${Date.now()}`, 0, '#bbaa00', '#000000')
+    .then(() => { console.log('Finished'), process.exit(0) }) }
 ];
 
 console.log('Starting...');

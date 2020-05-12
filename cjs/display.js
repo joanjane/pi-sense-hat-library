@@ -7,6 +7,8 @@ exports.Display = void 0;
 
 var _senseHatLed = _interopRequireDefault(require("sense-hat-led"));
 
+var _displayUtils = require("./display-utils");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -27,6 +29,7 @@ function () {
       x: 8,
       y: 8
     };
+    this.onMessageCancelListeners = [];
   }
 
   _createClass(Display, [{
@@ -51,19 +54,48 @@ function () {
     }
   }, {
     key: "showMessage",
-    value: function showMessage(message, speed, color, done) {
-      var renderColor = this.formatColor(color);
+    value: function showMessage(message, speed, color, background) {
+      var _this = this;
 
       if (this.enableLogging) {
-        console.log("Displaying message '".concat(message, "' in color ").concat(renderColor));
+        console.log("Displaying message '".concat(message, "'"));
       }
 
-      this.senseHatLeds.showMessage(message, speed, renderColor, [0, 0, 0], done);
+      this.cancelCurrentMessage();
+      var promise = new Promise(function (resolve, reject) {
+        _this.onMessageCancelListeners.push(reject);
+
+        var messageScroller = new _displayUtils.DisplayMessageScroller(message, color, background);
+        scrollMessage(messageScroller, _this.senseHatLeds, speed, resolve, function (cancelListener) {
+          return _this.onMessageCancelListeners.push(cancelListener);
+        });
+        var screen = messageScroller.next();
+
+        while (!screen.done) {
+          _this.senseHatLeds.sync.setPixels(screen.value);
+
+          messageScroller.next();
+        }
+
+        _this.onMessageCancelListeners = [];
+        resolve();
+      });
+      return promise;
+    }
+  }, {
+    key: "cancelCurrentMessage",
+    value: function cancelCurrentMessage() {
+      if (this.onMessageCancelListeners.some()) {
+        this.onMessageCancelListeners.forEach(function (l) {
+          return l();
+        });
+        this.onMessageCancelListeners = [];
+      }
     }
   }, {
     key: "setPixel",
     value: function setPixel(x, y, color) {
-      var renderColor = this.formatColor(color);
+      var renderColor = (0, _displayUtils.formatColor)(color);
 
       if (this.enableLogging) {
         console.log("Displaying pixel '".concat(x, "/").concat(y, "' in color ").concat(renderColor));
@@ -74,7 +106,7 @@ function () {
   }, {
     key: "setPixel",
     value: function setPixel(x, y, color) {
-      var renderColor = this.formatColor(color);
+      var renderColor = (0, _displayUtils.formatColor)(color);
 
       if (this.enableLogging) {
         console.log("Displaying pixel '".concat(x, "/").concat(y, "' in color ").concat(renderColor));
@@ -102,14 +134,12 @@ function () {
   }, {
     key: "setPixels",
     value: function setPixels(pixels) {
-      var _this = this;
-
-      if (pixels.length != 64) {
+      if (pixels.length != this.displaySize.x * this.displaySize.y) {
         throw new Error('pixels must contain 64 elements');
       }
 
       var renderPixels = pixels.map(function (color) {
-        return _this.formatColor(color);
+        return (0, _displayUtils.formatColor)(color);
       });
 
       if (this.enableLogging) {
@@ -118,15 +148,6 @@ function () {
 
       this.senseHatLeds.sync.setPixels(renderPixels);
     }
-  }, {
-    key: "formatColor",
-    value: function formatColor(color) {
-      if (!Array.isArray(color) && typeof color !== 'string') {
-        throw new Error("Color is not valid ".concat(color));
-      }
-
-      return typeof color === 'string' ? hexToRgb(color) : color;
-    }
   }]);
 
   return Display;
@@ -134,12 +155,19 @@ function () {
 
 exports.Display = Display;
 
-function hexToRgb(hex) {
-  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+function scrollMessage(messageScroller, senseHatLeds, speed, resolve, onCancel) {
+  var next = messageScroller.next();
 
-  if (!result || result.length !== 4) {
-    throw new Error("'".concat(hex, "' is not a valid color"));
+  if (next.done) {
+    resolve();
+    return;
   }
 
-  return [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)];
+  senseHatLeds.sync.setPixels(screen.value);
+  timeout = setTimeout(function () {
+    scrollMessage(messageScroller, senseHatLeds, speed, resolve, onCancel);
+  }, 1000 * speed);
+  onCancel && onCancel(function () {
+    clearTimeout(timeout);
+  });
 }

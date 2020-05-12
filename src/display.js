@@ -1,11 +1,12 @@
 import senseHatLed from 'sense-hat-led';
-import { formatColor } from './display-utils';
+import { formatColor, DisplayMessageScroller } from './display-utils';
 
 export class Display {
   constructor(enableLogging) {
     this.senseHatLeds = null;
     this.enableLogging = enableLogging || false;
     this.displaySize = { x: 8, y: 8 };
+    this.onMessageCancelListeners = [];
   }
 
   connect(onOpen) {
@@ -24,12 +25,34 @@ export class Display {
     this.senseHatLeds.sync.clear();
   }
 
-  showMessage(message, speed, color, done) {
-    const renderColor = formatColor(color);
+  showMessage(message, speed, color, background) {
     if (this.enableLogging) {
-      console.log(`Displaying message '${message}' in color ${renderColor}`);
+      console.log(`Displaying message '${message}'`);
     }
-    this.senseHatLeds.showMessage(message, speed, renderColor, [0, 0, 0], done);
+
+    this.cancelCurrentMessage();
+    const promise =  new Promise((resolve, reject) => {
+      this.onMessageCancelListeners.push((reject));
+      const messageScroller = new DisplayMessageScroller(message, color, background);
+      scrollMessage(messageScroller, this.senseHatLeds, speed, resolve, 
+        (cancelListener) => this.onMessageCancelListeners.push(cancelListener));
+      const screen = messageScroller.next();
+      while (!screen.done) {
+        this.senseHatLeds.sync.setPixels(screen.value);
+        messageScroller.next();
+      }
+      this.onMessageCancelListeners = [];
+      resolve();
+    });
+
+    return promise;
+  }
+
+  cancelCurrentMessage() {
+    if (this.onMessageCancelListeners.some()) {
+      this.onMessageCancelListeners.forEach(l => l());
+      this.onMessageCancelListeners = [];
+    }
   }
 
   setPixel(x, y, color) {
@@ -67,7 +90,7 @@ export class Display {
   }
 
   setPixels(pixels) {
-    if (pixels.length != 64) {
+    if (pixels.length != this.displaySize.x * this.displaySize.y) {
       throw new Error('pixels must contain 64 elements');
     }
     const renderPixels = pixels.map(color => formatColor(color));
@@ -76,5 +99,21 @@ export class Display {
     }
     this.senseHatLeds.sync.setPixels(renderPixels);
   }
+}
 
+function scrollMessage(messageScroller, senseHatLeds, speed, resolve, onCancel) {
+  const next = messageScroller.next();
+  if (next.done) {
+    resolve();
+    return;
+  }
+
+  senseHatLeds.sync.setPixels(screen.value);
+  timeout = setTimeout(() => {
+    scrollMessage(messageScroller, senseHatLeds, speed, resolve, onCancel);
+  }, 1000 * speed);
+
+  onCancel && onCancel(() => {
+    clearTimeout(timeout);
+  });
 }
