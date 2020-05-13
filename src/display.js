@@ -49,7 +49,7 @@ export class Display {
   }
 
   cancelCurrentMessage() {
-    if (this.onMessageCancelListeners.some()) {
+    if (this.onMessageCancelListeners.length > 0) {
       this.onMessageCancelListeners.forEach(l => l());
       this.onMessageCancelListeners = [];
     }

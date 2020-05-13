@@ -85,7 +85,7 @@ function () {
   }, {
     key: "cancelCurrentMessage",
     value: function cancelCurrentMessage() {
-      if (this.onMessageCancelListeners.some()) {
+      if (this.onMessageCancelListeners.length > 0) {
         this.onMessageCancelListeners.forEach(function (l) {
           return l();
         });
