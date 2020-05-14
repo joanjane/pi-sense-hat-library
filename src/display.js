@@ -34,15 +34,12 @@ export class Display {
     const promise =  new Promise((resolve, reject) => {
       this.onMessageCancelListeners.push((reject));
       const messageScroller = new DisplayMessageScroller(message, color, background);
-      scrollMessage(messageScroller, this.senseHatLeds, speed, resolve, 
+      scrollMessage(messageScroller, this.senseHatLeds, speed, 
+        () => {
+          resolve();
+          this.onMessageCancelListeners = [];
+        }, 
         (cancelListener) => this.onMessageCancelListeners.push(cancelListener));
-      const screen = messageScroller.next();
-      while (!screen.done) {
-        this.senseHatLeds.sync.setPixels(screen.value);
-        messageScroller.next();
-      }
-      this.onMessageCancelListeners = [];
-      resolve();
     });
 
     return promise;
