@@ -66,19 +66,12 @@ function () {
         _this.onMessageCancelListeners.push(reject);
 
         var messageScroller = new _displayUtils.DisplayMessageScroller(message, color, background);
-        scrollMessage(messageScroller, _this.senseHatLeds, speed, resolve, function (cancelListener) {
+        scrollMessage(messageScroller, _this.senseHatLeds, speed, function () {
+          resolve();
+          _this.onMessageCancelListeners = [];
+        }, function (cancelListener) {
           return _this.onMessageCancelListeners.push(cancelListener);
         });
-        var screen = messageScroller.next();
-
-        while (!screen.done) {
-          _this.senseHatLeds.sync.setPixels(screen.value);
-
-          messageScroller.next();
-        }
-
-        _this.onMessageCancelListeners = [];
-        resolve();
       });
       return promise;
     }
