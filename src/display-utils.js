@@ -5,8 +5,9 @@ export class DisplayMessageScroller {
   constructor(message, color, background) {
     this.displaySize = { x: 8, y: 8 };
 
-    this.display = null;
-    this.messageIndex = null;
+    this.display = emptyScreen();
+    this.appendPixels = [];
+    this.messageIndex = 0;
     this.message = message + emptyPadding; // append 4 spaces to scroll until an empty screen
     this.color = formatColor(color);
     this.background = formatColor(background || '#000000');

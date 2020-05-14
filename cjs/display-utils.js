@@ -28,8 +28,9 @@ function () {
       x: 8,
       y: 8
     };
-    this.display = null;
-    this.messageIndex = null;
+    this.display = (0, _displayCharTable.emptyScreen)();
+    this.appendPixels = [];
+    this.messageIndex = 0;
     this.message = message + emptyPadding; // append 4 spaces to scroll until an empty screen
 
     this.color = formatColor(color);
