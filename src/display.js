@@ -106,7 +106,7 @@ function scrollMessage(messageScroller, senseHatLeds, speed, resolve, onCancel) 
   }
 
   senseHatLeds.sync.setPixels(next.value);
-  timeout = setTimeout(() => {
+  const timeout = setTimeout(() => {
     scrollMessage(messageScroller, senseHatLeds, speed, resolve, onCancel);
   }, 1000 * speed);
 
