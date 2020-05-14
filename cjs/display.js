@@ -156,7 +156,7 @@ function scrollMessage(messageScroller, senseHatLeds, speed, resolve, onCancel) 
     return;
   }
 
-  senseHatLeds.sync.setPixels(screen.value);
+  senseHatLeds.sync.setPixels(next.value);
   timeout = setTimeout(function () {
     scrollMessage(messageScroller, senseHatLeds, speed, resolve, onCancel);
   }, 1000 * speed);
