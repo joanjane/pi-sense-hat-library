@@ -5,6 +5,16 @@ export const emptyScreen = () => new Array(64).fill(_);
 
 export const charTable = {
   // symbols
+  '¶': [
+    _,
+    _,
+    _,
+    _,
+    _,
+    _,
+    _,
+    _,
+  ],
   ' ': [
     _, _,
     _, _,
@@ -136,6 +146,16 @@ export const charTable = {
     _, _, _, x,
     x, _, _, x,
     _, x, x, _,
+  ],
+  'k': [
+    _, _, _, _,
+    _, _, _, _,
+    _, _, _, _,
+    x, _, _, x,
+    x, _, x, _,
+    x, x, _, _,
+    x, _, x, _,
+    x, _, _, x,
   ],
 
   // emojis

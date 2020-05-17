@@ -1,6 +1,5 @@
 import { emptyScreen, charTable } from './display-char-table';
 
-const emptyPadding = '    ';
 export class DisplayMessageScroller {
   constructor(message, color, background) {
     this.displaySize = { x: 8, y: 8 };
@@ -8,7 +7,7 @@ export class DisplayMessageScroller {
     this.display = emptyScreen();
     this.appendPixels = [];
     this.messageIndex = 0;
-    this.message = message + emptyPadding; // append 4 spaces to scroll until an empty screen
+    this.message = convertRenderMessage(message);
     this.color = formatColor(color);
     this.background = formatColor(background || '#000000');
   };
@@ -82,10 +81,11 @@ export function logDisplay(display, cols, rows, renderValues) {
   let textDisplay = '\n';
   for (let yIndex = 0; yIndex < rows; yIndex++) {
     for (let xIndex = 0; xIndex < cols; xIndex++) {
+      const pixel = display[yIndex * cols + xIndex];
       if (renderValues) {
-        textDisplay += ` [${display[yIndex * cols + xIndex]}]`;
+        textDisplay += ` [${formatDigit(pixel[0])},${formatDigit(pixel[1])},${formatDigit(pixel[2])}]`;
       } else {
-        textDisplay += ` ${display[yIndex * cols + xIndex] ? 'x' : '_'}`;
+        textDisplay += ` ${!pixel || pixel.every(p => p === 0) ? '_' : 'x'}`;
       }
     }
     textDisplay += `\n`;
@@ -93,6 +93,15 @@ export function logDisplay(display, cols, rows, renderValues) {
   return textDisplay;
 }
 
+function formatDigit(d) {
+  if (d > 99) {
+    return d.toString();
+  } else if (d > 9) {
+    return `0${d}`
+  } else {
+    return `00${d}`
+  }
+}
 
 export function formatColor(color) {
   if (!Array.isArray(color) && typeof color !== 'string') {
@@ -111,4 +120,11 @@ export function hexToRgb(hex) {
     parseInt(result[2], 16),
     parseInt(result[3], 16)
   ];
+}
+
+const emptyPadding = '    ';
+const letterSpacing = '¶';
+function convertRenderMessage(message) {
+  // append 4 spaces to scroll until an empty screen
+  return Array.from(Array.from(message).reduce((a,b) => { return a+letterSpacing+b }) + emptyPadding);
 }
