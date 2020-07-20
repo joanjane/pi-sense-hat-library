@@ -1,4 +1,17 @@
-import { emptyScreen, charTable } from './display-char-table';
+import emojis from './fonts/emojis.json';
+import symbols from './fonts/symbols.json';
+import lowercase from './fonts/lowercase.json';
+import uppercase from './fonts/uppercase.json';
+import numbers from './fonts/numbers.json';
+
+const charTable = {
+  ...emojis,
+  ...symbols,
+  ...lowercase,
+  ...uppercase,
+  ...numbers
+};
+export const emptyScreen = () => new Array(64).fill(' ');
 
 export class DisplayMessageScroller {
   constructor(message, color, background) {
@@ -36,7 +49,7 @@ export class DisplayMessageScroller {
   }
 
   renderPixels(display, color, background) {
-    return display.map(p => p ? color : background);
+    return display.map(p => p === 'x' ? color : background);
   }
 
   shiftColumn(displayMatrix, next) {
@@ -125,9 +138,11 @@ export function hexToRgb(hex) {
 const emptyPadding = '    ';
 const letterSpacing = '¶';
 function convertRenderMessage(message) {
+  // remove diacritics
+  message = message.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  
   // append 4 spaces to scroll until an empty screen
   return Array.from(Array.from(message).reduce((a,b) => { 
-    debugger;
     return a[a.length-1] !== ' ' && b !== ' ' ? a+letterSpacing+b : a+b;
   }) + emptyPadding);
 }

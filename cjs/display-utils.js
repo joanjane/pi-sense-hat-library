@@ -6,9 +6,19 @@ Object.defineProperty(exports, "__esModule", {
 exports.logDisplay = logDisplay;
 exports.formatColor = formatColor;
 exports.hexToRgb = hexToRgb;
-exports.DisplayMessageScroller = void 0;
+exports.DisplayMessageScroller = exports.emptyScreen = void 0;
 
-var _displayCharTable = require("./display-char-table");
+var _emojis = _interopRequireDefault(require("./fonts/emojis.json"));
+
+var _symbols = _interopRequireDefault(require("./fonts/symbols.json"));
+
+var _lowercase = _interopRequireDefault(require("./fonts/lowercase.json"));
+
+var _uppercase = _interopRequireDefault(require("./fonts/uppercase.json"));
+
+var _numbers = _interopRequireDefault(require("./fonts/numbers.json"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -16,7 +26,19 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var emptyPadding = '    ';
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var charTable = _objectSpread({}, _emojis["default"], {}, _symbols["default"], {}, _lowercase["default"], {}, _uppercase["default"], {}, _numbers["default"]);
+
+var emptyScreen = function emptyScreen() {
+  return new Array(64).fill(' ');
+};
+
+exports.emptyScreen = emptyScreen;
 
 var DisplayMessageScroller =
 /*#__PURE__*/
@@ -28,11 +50,10 @@ function () {
       x: 8,
       y: 8
     };
-    this.display = (0, _displayCharTable.emptyScreen)();
+    this.display = emptyScreen();
     this.appendPixels = [];
     this.messageIndex = 0;
-    this.message = message + emptyPadding; // append 4 spaces to scroll until an empty screen
-
+    this.message = convertRenderMessage(message);
     this.color = formatColor(color);
     this.background = formatColor(background || '#000000');
   }
@@ -40,7 +61,7 @@ function () {
   _createClass(DisplayMessageScroller, [{
     key: Symbol.iterator,
     value: function value() {
-      this.display = (0, _displayCharTable.emptyScreen)();
+      this.display = emptyScreen();
       this.appendPixels = [];
       this.messageIndex = 0;
       return this;
@@ -55,7 +76,7 @@ function () {
       } else {
         if (this.appendPixels.length === 0) {
           var charSymbol = this.message[this.messageIndex];
-          this.appendPixels = _displayCharTable.charTable[charSymbol] || _displayCharTable.charTable['?'];
+          this.appendPixels = charTable[charSymbol] || charTable['?'];
           this.messageIndex++;
         }
 
@@ -75,7 +96,7 @@ function () {
     key: "renderPixels",
     value: function renderPixels(display, color, background) {
       return display.map(function (p) {
-        return p ? color : background;
+        return p === 'x' ? color : background;
       });
     }
   }, {
@@ -128,10 +149,14 @@ function logDisplay(display, cols, rows, renderValues) {
 
   for (var yIndex = 0; yIndex < rows; yIndex++) {
     for (var xIndex = 0; xIndex < cols; xIndex++) {
+      var pixel = display[yIndex * cols + xIndex];
+
       if (renderValues) {
-        textDisplay += " [".concat(display[yIndex * cols + xIndex], "]");
+        textDisplay += " [".concat(formatDigit(pixel[0]), ",").concat(formatDigit(pixel[1]), ",").concat(formatDigit(pixel[2]), "]");
       } else {
-        textDisplay += " ".concat(display[yIndex * cols + xIndex] ? 'x' : '_');
+        textDisplay += " ".concat(!pixel || pixel.every(function (p) {
+          return p === 0;
+        }) ? '_' : 'x');
       }
     }
 
@@ -139,6 +164,16 @@ function logDisplay(display, cols, rows, renderValues) {
   }
 
   return textDisplay;
+}
+
+function formatDigit(d) {
+  if (d > 99) {
+    return d.toString();
+  } else if (d > 9) {
+    return "0".concat(d);
+  } else {
+    return "00".concat(d);
+  }
 }
 
 function formatColor(color) {
@@ -157,4 +192,16 @@ function hexToRgb(hex) {
   }
 
   return [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)];
+}
+
+var emptyPadding = '    ';
+var letterSpacing = '¶';
+
+function convertRenderMessage(message) {
+  // remove diacritics
+  message = message.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); // append 4 spaces to scroll until an empty screen
+
+  return Array.from(Array.from(message).reduce(function (a, b) {
+    return a[a.length - 1] !== ' ' && b !== ' ' ? a + letterSpacing + b : a + b;
+  }) + emptyPadding);
 }
