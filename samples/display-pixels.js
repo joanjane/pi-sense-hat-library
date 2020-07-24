@@ -13,10 +13,10 @@ const screen = [
 ];
 
 const {
-  createDisplay,
-} = require('./src');
+  Display,
+} = require('../cjs/display');
 
-const display = createDisplay();
+const display = new Display(true);
 
 display.connect(() => {
   display.setPixels(screen);

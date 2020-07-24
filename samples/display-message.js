@@ -1,8 +1,8 @@
 const {
-  createDisplay,
-} = require('./src');
+  Display
+} = require('./cjs/display');
 
-const display = createDisplay();
+const display = new Display(true);
 
 display.connect(() => {
   display.showMessage(process.argv[2], .2, '#aa55dd', '#000000')

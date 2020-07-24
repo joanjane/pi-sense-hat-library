@@ -23,7 +23,7 @@ export class MotionSensors {
           resolve({
             acceleration: data.accel,
             gyroscope: data.gyro,
-            orientation: data.orientation,
+            orientation: data.fusionPose,
             compass: data.compass
           });
         }
