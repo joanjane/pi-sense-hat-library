@@ -25,8 +25,8 @@ export class MotionSensors {
         } else {
           resolve(
             options.radians ? 
-              this.mapMotionRadians(data) :
-              this.mapMotionDegrees(data)
+              mapMotionRadians(data) :
+              mapMotionDegrees(data)
             );
         }
       });
@@ -34,27 +34,31 @@ export class MotionSensors {
 
     return environmentSensors;
   }
+}
 
-  mapMotionDegrees(data) {
-    return {
-      acceleration: data.accel.map(radiansToDegrees),
-      gyroscope: data.gyro.map(radiansToDegrees),
-      orientation: data.fusionPose.map(radiansToDegrees),
-      compass: radiansToDegrees(data.compass[2])
-    };
-  }
+function mapMotionDegrees(data) {
+  return {
+    acceleration: convertVector(data.accel).map(radiansToDegrees),
+    gyroscope: convertVector(data.gyro).map(radiansToDegrees),
+    orientation: convertVector(data.fusionPose).map(radiansToDegrees),
+    compass: radiansToDegrees(data.compass.z)
+  };
+}
 
-  mapMotionRadians(data) {
-    return {
-      acceleration: data.accel,
-      gyroscope: data.gyro,
-      orientation: data.fusionPose,
-      compass: data.compass[2]
-    };
-  }
+function mapMotionRadians(data) {
+  return {
+    acceleration: convertVector(data.accel),
+    gyroscope: convertVector(data.gyro),
+    orientation: convertVector(data.fusionPose),
+    compass: data.compass.z
+  };
 }
 
 function radiansToDegrees(radians) {
   let degrees = radians * (180/Math.PI);
   return degrees < 0 ? degrees + 360 : degrees;
+}
+
+function convertVector(vector) {
+  return [vector.x, vector.y, vector.z];
 }
