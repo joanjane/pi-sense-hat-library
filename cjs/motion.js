@@ -45,31 +45,11 @@ function () {
           if (error) {
             reject(error);
           } else {
-            resolve(options.radians ? _this.mapMotionRadians(data) : _this.mapMotionDegrees(data));
+            resolve(options.radians ? mapMotionRadians(data) : mapMotionDegrees(data));
           }
         });
       });
       return environmentSensors;
-    }
-  }, {
-    key: "mapMotionDegrees",
-    value: function mapMotionDegrees(data) {
-      return {
-        acceleration: data.accel.map(radiansToDegrees),
-        gyroscope: data.gyro.map(radiansToDegrees),
-        orientation: data.fusionPose.map(radiansToDegrees),
-        compass: radiansToDegrees(data.compass[2])
-      };
-    }
-  }, {
-    key: "mapMotionRadians",
-    value: function mapMotionRadians(data) {
-      return {
-        acceleration: data.accel,
-        gyroscope: data.gyro,
-        orientation: data.fusionPose,
-        compass: data.compass[2]
-      };
     }
   }]);
 
@@ -78,7 +58,29 @@ function () {
 
 exports.MotionSensors = MotionSensors;
 
+function mapMotionDegrees(data) {
+  return {
+    acceleration: convertVector(data.accel).map(radiansToDegrees),
+    gyroscope: convertVector(data.gyro).map(radiansToDegrees),
+    orientation: convertVector(data.fusionPose).map(radiansToDegrees),
+    compass: radiansToDegrees(data.compass.z)
+  };
+}
+
+function mapMotionRadians(data) {
+  return {
+    acceleration: convertVector(data.accel),
+    gyroscope: convertVector(data.gyro),
+    orientation: convertVector(data.fusionPose),
+    compass: data.compass.z
+  };
+}
+
 function radiansToDegrees(radians) {
   var degrees = radians * (180 / Math.PI);
   return degrees < 0 ? degrees + 360 : degrees;
+}
+
+function convertVector(vector) {
+  return [vector.x, vector.y, vector.z];
 }
